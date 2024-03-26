@@ -32,3 +32,44 @@ Then(/^URL should match (.*)$/, async function(expectedURL){
     let url = await browser.getUrl();
     expect(url).to.equal(expectedURL)
 })
+
+
+Given(/^a webpage is opened$/, async function(){
+    await browser.url("")
+    await browser.setTimeout({implicit: 15000, pageLoad: 10000})
+    await browser.maximizeWindow()
+})
+
+When(/^perform web interactions$/, async function(){
+    /**
+     * Input box
+     * Actions:
+     * 1. Type into input box
+     * 2. Clear the field and type or just addVal()
+     * 3. Click and type
+     * 4. Type slowly like a real user
+     */
+
+    /**
+     * Additional useful methods:
+     * scrollIntoView()
+     * moveToElement()
+     * click()
+     * 
+     */
+
+    let num = "12345"
+
+    let inputElement = await $(`[type=number]`)
+    await inputElement.setValue("12345")    //addValue() does not clear the initial value
+
+    //type slowly by breaking up the string using charAt()
+    for(let i=0; i<num.length; i++){
+        let charStr = num.charAt(i)
+        await browser.pause(1000)
+        await browser.keys(charStr)
+    }
+    
+    await browser.pause(3000)
+
+})
