@@ -4,7 +4,7 @@ Feature: Inventory
     Scenario Outline: Demo Web Interactions
         Given login to inventory web app
         Then inventory page should list <numberofproducts>
-        #When validate all products have valid price (price > 0)
+        Then validate all products have valid price
 
         Examples:
             | TestID   | numberofproducts |
