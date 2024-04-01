@@ -155,17 +155,72 @@ When(/^perform web interactions$/, async function () {
   /*await $(`#file-upload`).addValue(`${process.cwd}data/fileupload/dummy.txt`)
   await $(`#file-submit`).click()*/
 
-  await $(`=iFrame`).click()
-  let element = await $(`#mce_0_ifr`)
-  await browser.switchToFrame(element)
-  
-  //interaction with frame
-  await $(`#tinymce`).setValue("this is an iframe")
+  // await $(`=iFrame`).click()
+  // let element = await $(`#mce_0_ifr`)
+  // await browser.switchToFrame(element)
 
-  //scrollIntoView() scrolls until it finds the element
+  // //interaction with frame
+  // await $(`#tinymce`).setValue("this is an iframe")
 
-  
+  // //scrollIntoView() scrolls until it finds the element
+
+  /**Handling Tables
+   *
+   */
+
+  //1. Check number of rows and columns
+  let rowCount = await $$(`//table[@id="table1"]/tbody/tr`).length;
+  console.log(rowCount);
+  expect(rowCount).to.equal(4);
+  let colCount = await $$(`//table[@id="table1"]/thead/tr/th`).length;
+  console.log(colCount);
+  expect(colCount).to.equal(6);
+
+  //2. gets all table data
+  // let arr = []
+  // for (let i=0; i< rowCount; i++){
+  //   let personObj = {
+  //     lastname: "",
+  //     firstname: "",
+  //     email: "",
+  //     due: "",
+  //     web: "",
+  //   }
+  //   for (let j=0; j< colCount; j++){
+  //     let cellVal = await $(`//table[@id="table1"]/tbody/tr[${i+1}]/td[${j+1}]`).getText() //web table actually iterates from ind 1
+  //     if (j === 0) personObj.lastname = cellVal
+  //     if (j === 1) personObj.firstname = cellVal
+  //     if (j === 2) personObj.email = cellVal
+  //     if (j === 3) personObj.due = cellVal
+  //     if (j === 4) personObj.web = cellVal
+
+  //     arr.push(personObj)
+  //   }
+  // }
+  // console.log(`>> Complete table: ${JSON.stringify(arr)}`); //need to change json object to string
+
+  /**
+   * Use execute method to run javascript methods as call back functions
+   * ScrollBY()
+   * ScrollTo()
+   */
+
+  // //scroll down
+  // await browser.execute(() => {
+  //   window.scrollBy(0, window.innerHeight)
+  // })
+  // //scroll up
+  // await browser.execute(() => {
+  //   window.scrollBy(0, -window.innerHeight)
+  // })
+  // //Scroll down
+  // await browser.execute(()=> {
+  //  window.scrollTo(0, document.body.scrollHeight)
+  // })
+  // //Scroll top
+  // await browser.execute(()=> {
+  //   window.scrollTo(0, document.body.scrollTop)
+  // })
 
   await browser.debug();
-
 });
