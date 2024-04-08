@@ -1,4 +1,11 @@
 import type { Options } from '@wdio/types'
+import dotenv from "dotenv"
+dotenv.config()
+
+let headless = process.env.HEADLESS
+let debug = process.env.DEBUG
+
+console.log(`>> The headless flag ${headless}`);
 export const config: Options.Testrunner = {
     //
     // ====================
@@ -58,8 +65,24 @@ export const config: Options.Testrunner = {
     // Sauce Labs platform configurator - a great tool to configure your capabilities:
     // https://saucelabs.com/platform/platform-configurator
     //
+
+    /**
+     * Additional chrome options:
+     * --headless
+     * --no-sandbox
+     * --disable-dev-shm-usage
+     * --window-size=1920,1080
+     * --disable-gpu
+     * --proxy-server=http://domain
+     * binary=<location>
+     * --auth-server-whitelist="_"
+     */
     capabilities: [{
+        maxInstances: 3,
         browserName: 'chrome',
+        "goog:chromeOptions":{
+            args: headless.toUpperCase() === "Y" ? ["--disable-web-security", "--headless", "--disable-dev-shm-usage", "--no-sandbox", "--window-size=1920,1080"] : []
+        },
         acceptInsecureCerts: true,
     }],
 
@@ -70,7 +93,7 @@ export const config: Options.Testrunner = {
     // Define all options that are relevant for the WebdriverIO instance here
     //
     // Level of logging verbosity: trace | debug | info | warn | error | silent
-    logLevel: 'error',
+    logLevel: debug.toUpperCase()==="Y" ? 'info' : 'error',
     //
     // Set specific log levels per logger
     // loggers:
@@ -156,7 +179,7 @@ export const config: Options.Testrunner = {
         // <boolean> fail if there are any undefined or pending steps
         strict: false,
         // <string> (expression) only execute the features or scenarios with tags matching the expression
-        tagExpression: '@demo2',
+        tagExpression: '',
         // <number> timeout for step definitions
         timeout: 300000,
         // <boolean> Enable this config to treat undefined definitions as warnings.
