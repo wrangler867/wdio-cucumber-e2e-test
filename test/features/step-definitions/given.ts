@@ -1,7 +1,9 @@
+import logger from "../../helper/logger";
 import { Given } from "@wdio/cucumber-framework";
 //import chai from chai;
 
 Given(/^As (a|an) (.*) user I login to inventory web app$/, async function (prefixText, userType) {
+    logger.info(`started login process`)
     /**Login */
     console.log(`>> the usertype: ${userType}`);
     console.log(`>> The prefixText: ${prefixText}`);

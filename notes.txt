@@ -1,0 +1,114 @@
+Lots of hooks for before and after executions
+=============================================
+BeforeFeature
+BeforeScenario
+BeforeStep
+Step 
+AfterFeature
+AfterScenario
+AfterStep
+
+Real Time use cases of hooks
+============================
+Use case: Take a screenshot if test fails
+
+    - Go to line 240 in config 
+    - decomment afterStep method
+    - understand function params first step, scenario, result
+    - clg json.stringify for each param
+    - read the json and get the desired key value pair 
+    - if(result.passed) { await browser.takeScreenshot() }
+    - change afterStep method to async
+
+Setup World Object
+==================
+** Set value in one step and pass the same in another step..
+** scope of the World Object is within the same scenario / iteration
+
+    - Create a world.ts file under step-definitions
+    - import setWorldConstructor using {} keys
+    - import chai methods
+    - Create a custom World class within world.ts: 
+    class CustomWorld{ 
+        Constructor(){
+
+        } 
+    } setWorldConstructor(CustomWorld)
+    - Define variable in class and initialize it with empty string in Constructor
+    - Set value to variable using this.variable in the step
+
+Set up this.testid
+==================
+To setup unique test identifier to report any error, failure etc.
+
+    - Follow convention for writing scenario <TestID>: Description of Scenario
+    - Declare var testid in world Object
+    - initialize it in constructor with this.testid = ""
+    - Get testID using beforeScenario hook
+    - Add custom hooks.ts with beforeStep customization
+
+Setup Winston logger
+===================
+npm i --save-dev Winstoncreate 
+setup logger file within helper folder
+define log_level in the process .env file
+import logger in the step definition file
+use methods like logger.info logger.debug logger.error etc
+
+Saving Execution Logs
+=====================
+(enter_run_command_here) > output.txt
+npm run test:demo > output.txt
+
+Second way is to define the same > output.txt in package.json command
+
+Setup Allure reporter
+=====================
+    - npm install -g allure-commandline --save-dev [installs commandline tool] [prerequisite java version 8 or above]
+    - Run the following command in PowerShell Set-ExecutionPolicy RemoteSigned -Scope CurrentUser [Can be set back to Restricted using the same command]
+    - run command allure serve
+    - set flags for cucumber in the config file in the reporters object array
+    - disableWebdriverStepsReporting: true,
+    - useCucumberStepReporter: true
+
+Additional Allure Configurations
+===============================
+    - import allure from "@wdio/allure-reporter" at top of wdio.conf.ts
+    - add the following in AfterFeature hook in config file -> allure.addEnvironment("Environment: ", browser.options.environment)
+    - //@ts-nocheck add at top of config file
+    - to delete local allure logs on every new run:
+    - uncomment onPrepare hook
+    - import fs from "fs"
+    - if(process.env.RUNNER === "LOCAL" && fs.existsSync("./allure-results"))
+    - fs.rmdirSync("./allure-results", {recursive: true})
+    - go to .env add key RUNNER=LOCAL
+
+Exception Handling and Assertions
+=================================
+    An Exception is a condition that interrupts or stops normal code execution
+
+    Types of Exceptions:
+    Standard JS Error: ReferenceError SyntaxError, TypeError
+    Custome Error (using throw Error function call)
+    Chai Assertions failure
+
+    Catch Exceptions
+    try{ //some code }
+    catch_object.name  or catch_object.message
+    throw catch_object
+
+    Report and Move on for low priority errors
+    - logger.error(`write message`)
+    - handling known problem / bug 
+    - surround Assertions with try catch and then just report it as logger error in the catch block 
+    - we can use this.testid to get test id in logger info / error messages
+    - Yellow color in allure indicates test script defects whereas red indicates failing tests based on Assertions which could be a bug
+
+Build Global Error Reporter function
+====================================
+    - create a reporter.ts under helper
+    - export default {name_of_function}
+    - import helper/reporter.ts
+    - reporter.addStep(this.testid, "info", "message_here")
+    - allure.addIssue(issueID) -> to report errors using allure
+    
